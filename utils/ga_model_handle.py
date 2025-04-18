@@ -12,7 +12,7 @@ def repeat_channels(img):
 
 custom_objects = {"repeat_channels": repeat_channels}
 keras.config.enable_unsafe_deserialization()
-model = load_model('assets/ga_model (3).keras', custom_objects=custom_objects)
+model = load_model('assets/1504_1706.keras', custom_objects=custom_objects)
 
 # def result_process(pred):
 #     gender_dict= {0:"male", 1:"female"}
@@ -40,12 +40,29 @@ def result_process(pred):
     
 def predict_ga(face_img):
     rgb_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
-    img = cv2.cvtColor(rgb_img, cv2.COLOR_RGB2GRAY)
-    img = cv2.resize(img, (128, 128))
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
+    gray = cv2.cvtColor(rgb_img, cv2.COLOR_RGB2GRAY)
+    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+    darker = cv2.convertScaleAbs(blurred, alpha=0.7, beta=-10)
+    equalized = cv2.equalizeHist(darker)
+    img = cv2.resize(equalized, (128, 128))
     img = img_to_array(img)
     img = img.reshape(1,128,128,1)
     img = img/255.0
     pred = model.predict(img)
     pred = result_process(pred)
     return pred
+
+# def predict_ga(face_img):
+#     rgb_img = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
+#     gray = cv2.cvtColor(rgb_img, cv2.COLOR_RGB2GRAY)
+#     blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+#     darker = cv2.convertScaleAbs(blurred, alpha=0.7, beta=-10)
+#     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+#     equalized = clahe.apply(darker)
+#     img = cv2.resize(equalized, (128, 128))
+#     img = img_to_array(img)
+#     img = img.reshape(1,128,128,1)
+#     img = img/255.0
+#     pred = model.predict(img)
+#     pred = result_process(pred)
+#     return pred
