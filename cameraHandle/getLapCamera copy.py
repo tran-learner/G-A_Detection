@@ -2,7 +2,7 @@ import time
 import cv2
 import os
 import sys
-sys.path.append(os.path.abspath("../G&A_DETECTION/"))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.ga_model_handle import predict_ga
 
 def capture_loop():  
