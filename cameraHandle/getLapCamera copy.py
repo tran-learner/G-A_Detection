@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.abspath("../G&A_DETECTION/"))
 from utils.ga_model_handle import predict_ga
 from utils.tf_model_handle import lite_predict_ga   
-from utils.tf_model_handle_copy import lite_predict_ga   
+# from utils.tf_model_handle_copy import lite_predict_ga   
 
 def capture_loop():  
     face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_alt.xml')
@@ -55,7 +55,7 @@ def capture_loop():
         ret, frame = camera.read()
         if not ret:
             break
-        
+        frame = cv2.flip(frame,1)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
         # faces detection
