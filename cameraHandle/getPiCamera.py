@@ -6,7 +6,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # sys.path.append(os.path.abspath("../G&A_DETECTION/"))
-from utils.tf_model_handle import lite_predict_ga
+from utils.tf_model_handle_copy import lite_predict_ga   
 
 def capture_loop():
     face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_alt.xml')
