@@ -1,5 +1,6 @@
 import cv2
-import tensorflow as tf
+# import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 import numpy as np
 
 
