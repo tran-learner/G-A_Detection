@@ -15,7 +15,7 @@ def capture_loop():
     frame_count = 0
     process_every_n_frames =30
     
-    camera = PiCamera2()
+    camera = Picamera2()
     config = camera.create_preview_configuration(main={"format":"RGB888", "size":(700,500)})
     camera.configure(config)
     camera.start()
@@ -60,3 +60,4 @@ def capture_loop():
     cv2.destroyAllWindows()
     camera.stop()
 
+capture_loop()
