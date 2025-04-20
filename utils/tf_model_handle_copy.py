@@ -1,10 +1,11 @@
 import cv2
-# import tensorflow as tf
-import tflite_runtime.interpreter as tflite
+import tensorflow as tf
+# import tflite_runtime.interpreter as tflite
 import numpy as np
 
 
-interpreter = tf.lite.Interpreter(model_path="assets/gamodel.tflite")
+# interpreter = tf.lite.Interpreter(model_path="assets/gamodel.tflite")
+interpreter = tf.lite.Interpreter(model_path="assets/ga01.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()

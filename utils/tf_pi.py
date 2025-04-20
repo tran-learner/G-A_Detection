@@ -4,7 +4,8 @@ import tflite_runtime.interpreter as tflite
 import numpy as np
 
 
-interpreter = tflite.Interpreter(model_path="assets/gamodel.tflite")
+# interpreter = tflite.Interpreter(model_path="assets/gamodel.tflite")
+interpreter = tflite.Interpreter(model_path="assets/ga01.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
