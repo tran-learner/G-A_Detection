@@ -16,7 +16,7 @@ def capture_loop():
     process_every_n_frames =30
     
     camera = Picamera2()
-    config = camera.create_preview_configuration(main={"format":"RGB888", "size":(700,500)})
+    config = camera.create_preview_configuration(main={"format":"RGB888", "size":(1000,800)})
     camera.configure(config)
     camera.start()
     time.sleep(1)
