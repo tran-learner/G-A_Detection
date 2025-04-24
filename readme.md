@@ -5,4 +5,4 @@
 opencv-python picamera
 
 
-//need to install these packages: tensorflow, opencv-python, face_recognition
+//need to install these packages: tensorflow, opencv-python, face_recognition, matplotlib, tensorflow lite
