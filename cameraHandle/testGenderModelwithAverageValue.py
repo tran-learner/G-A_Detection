@@ -9,7 +9,7 @@ import cv2
 import os
 import sys
 import numpy as np
-sys.path.append(os.path.abspath("../G&A_DETECTION/"))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.gender_model_with_average import hair_img_prepare, gender_predict
     
 
@@ -20,7 +20,7 @@ def capture_loop():
     frame_count = 0
     # invoke the model to predict every 5 frames
     # get the average of 10 times prediction
-    process_every_n_frames =5
+    process_every_n_frames = 5
     gender_el_count = 15
     
     if not camera.isOpened():
