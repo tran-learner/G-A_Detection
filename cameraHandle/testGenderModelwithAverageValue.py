@@ -9,7 +9,8 @@ import cv2
 import os
 import sys
 import numpy as np
-sys.path.append(os.path.abspath("../G&A_DETECTION/"))
+# sys.path.append(os.path.abspath("../G&A_DETECTION/"))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from utils.gender_model_with_average import hair_img_prepare, gender_predict
     
 

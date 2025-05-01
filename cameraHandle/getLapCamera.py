@@ -39,6 +39,8 @@ def capture_loop():
                         label = ltext
                         current_labels.append((x,y,label))
                         break
+        for (x, y, label) in current_labels:
+            cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         cv2.imshow("OK", frame)
         
         if cv2.waitKey(1) & 0xFF == ord('q'):  
