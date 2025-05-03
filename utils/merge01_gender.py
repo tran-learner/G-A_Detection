@@ -18,8 +18,8 @@ gender_output_details = None
 def load_gender_model():
     global gender_interpreter, gender_input_details, gender_output_details
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    # model_path = os.path.join(base_dir, '..', 'models', 'gender_oval_blur.tflite')
-    model_path = os.path.join(base_dir, '..', 'models', 'gender_retrain.tflite')
+    model_path = os.path.join(base_dir, '..', 'models', 'gender_oval_blur.tflite')
+    # model_path = os.path.join(base_dir, '..', 'models', 'gender_retrain.tflite')
     gender_interpreter = tf.lite.Interpreter(model_path=model_path)
     gender_interpreter.allocate_tensors()
     gender_input_details = gender_interpreter.get_input_details()

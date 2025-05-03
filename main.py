@@ -1,3 +1,4 @@
+#see from above: female => male
 from fastapi import FastAPI
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
@@ -34,8 +35,8 @@ def camera_loop():
 @app.get("/analyze")       
 def analyze_face():
     print('ANALYZE START')
-    frames_per_process = 7
-    process_num = 150
+    frames_per_process = 5
+    process_num = 15
     face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_alt.xml')
 
     frame_count = 0
@@ -49,25 +50,28 @@ def analyze_face():
             if current_frame is None:
                 time.sleep(0.05) #why
                 continue
-            frame = current_frame.copy()
+            full_frame = current_frame.copy()
             
         frame_count +=1
         if frame_count % frames_per_process != 0:
             continue
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(full_frame, cv2.COLOR_BGR2GRAY)
         
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=7, minSize=(30, 30))
         if len(faces) == 0: continue
         
         for (x, y, w, h) in faces:
-            gender = gender_predict(frame, x, y, w, h)
+            face_img = full_frame[y:y+h, x:x+w].copy()
+            # cv2.imwrite(f"debug/face_{process_no}.jpg", face_img)
+            age = age_predict(face_img)
+            ages.append(age)
+            
+            gender = gender_predict(full_frame, x, y, w, h)
+            print(gender)
             genders.append(gender)
             if gender > 0.98:
                 f_count += 1
 
-            face_img = frame[y:y+h, x:x+w].copy()
-            age = age_predict(face_img)
-            ages.append(age)
             process_no += 1
             break
              

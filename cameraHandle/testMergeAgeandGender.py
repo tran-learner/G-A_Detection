@@ -27,7 +27,7 @@ def capture_loop():
     # invoke the model to predict every 5 frames
     # get the average of 10 times prediction
     process_every_n_frames =5
-    gender_el_count = 15
+    gender_el_count = 20
     
     if not camera.isOpened():
         print("Fail to open camera")
