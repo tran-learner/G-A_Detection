@@ -1,12 +1,85 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+from contextlib import asynccontextmanager
 import cv2
+import threading
+import time
+import numpy as np 
+from utils.merge01_age import age_predict, find_most_common_age_group, load_age_model
+from utils.merge01_gender import gender_predict, load_gender_model
 
-video = cv2.VideoCapture(0)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_gender_model()
+    load_age_model()
+    yield
+    
+app = FastAPI(lifespan=lifespan)
 
-while True:
-    ret, frame = video.read()
-    cv2.imshow("Age-Gender",frame)
-    k= cv2.waitKey(1)
-    if k==ord('q'):
-        break
-video.release()
-cv2.destroyAllWindows()
+lock = threading.Lock()
+face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_alt.xml')
+current_frame = None
+
+def camera_loop():
+    global current_frame
+    cap = cv2.VideoCapture(0)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            continue
+        with lock:
+            current_frame = cv2.flip(frame, 1)
+        # time.sleep(0.02)
+
+@app.get("/analyze")       
+def analyze_face():
+    print('ANALYZE START')
+    frames_per_process = 7
+    process_num = 150
+    face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_alt.xml')
+
+    frame_count = 0
+    process_no = 0
+    f_count = 0
+    genders = []
+    ages = []
+    
+    while process_no < process_num:
+        with lock:
+            if current_frame is None:
+                time.sleep(0.05) #why
+                continue
+            frame = current_frame.copy()
+            
+        frame_count +=1
+        if frame_count % frames_per_process != 0:
+            continue
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        
+        faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=7, minSize=(30, 30))
+        if len(faces) == 0: continue
+        
+        for (x, y, w, h) in faces:
+            gender = gender_predict(frame, x, y, w, h)
+            genders.append(gender)
+            if gender > 0.98:
+                f_count += 1
+
+            face_img = frame[y:y+h, x:x+w].copy()
+            age = age_predict(face_img)
+            ages.append(age)
+            process_no += 1
+            break
+             
+    if len(genders) == process_num:
+        gender_average = sum(float(g) for g in genders)/process_num
+        if gender_average < 0.5:
+            if f_count >=3:
+                gender_average = 1.2
+        age_group = find_most_common_age_group(ages)
+        print(f"{gender_average} {age_group}")
+        return {"age": age_group, "gender": gender_average}
+    else: 
+        return {"error": "an error occurred in analyze function."}        
+        
+threading.Thread(target=camera_loop, daemon=True).start()         

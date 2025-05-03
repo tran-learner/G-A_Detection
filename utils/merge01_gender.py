@@ -3,13 +3,27 @@ import tensorflow as tf
 # import tflite_runtime.interpreter as tflite
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
+# interpreter = tf.lite.Interpreter(model_path="models/gender_oval_blur.tflite")
+# interpreter.allocate_tensors()
 
-interpreter = tf.lite.Interpreter(model_path="models/gender_oval_blur.tflite")
-interpreter.allocate_tensors()
+# gender_input_details = interpreter.get_gender_input_details()
+# output_details = interpreter.get_output_details()
 
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
+gender_interpreter = None
+gender_input_details = None
+gender_output_details = None
+
+def load_gender_model():
+    global gender_interpreter, gender_input_details, gender_output_details
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    # model_path = os.path.join(base_dir, '..', 'models', 'gender_oval_blur.tflite')
+    model_path = os.path.join(base_dir, '..', 'models', 'gender_retrain.tflite')
+    gender_interpreter = tf.lite.Interpreter(model_path=model_path)
+    gender_interpreter.allocate_tensors()
+    gender_input_details = gender_interpreter.get_input_details()
+    gender_output_details = gender_interpreter.get_output_details()
 
 def hair_img_prepare(img, x, y, w, h):
     padding_x = int(w * 0.2)
@@ -39,16 +53,15 @@ def gender_predict(img, x, y, w, h):
     equalized = cv2.equalizeHist(darker)
     img = cv2.resize(equalized, (160, 160))
     cv2.imshow('proccessed',img)
+    cv2.waitKey(1)
     
     img = np.array(img, dtype=np.float32)
     img = img.reshape(1, 160, 160, 1)
     img = img/255.0
     
-    interpreter.set_tensor(input_details[0]['index'], img)
-    interpreter.invoke()
-    gender_pred = interpreter.get_tensor(output_details[0]['index'])
-    # print(gender_pred)
+    gender_interpreter.set_tensor(gender_input_details[0]['index'], img)
+    gender_interpreter.invoke()
+    gender_pred = gender_interpreter.get_tensor(gender_output_details[0]['index'])
     gender_pred = gender_pred[0][0]
-    print(gender_pred)
     return gender_pred
 

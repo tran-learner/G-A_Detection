@@ -7,7 +7,7 @@
 # the model tends to classify samples with tied-back hair as male. => retrain model "gender_retrain"
 # in this file, the old model: gender_oval_blur.tflite is still used
 
-# if the values appear to be more than 0.9 in a batch time, the average_gender result will be set to 1.2
+# if the values appear to be more than 0.98 in a batch time, the average_gender result will be set to 1.2
 # good result :>> (test with my face: female - 2x)
 
 import cv2
