@@ -1,6 +1,7 @@
 #see from above: female => male
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import cv2
 import threading
@@ -16,6 +17,17 @@ async def lifespan(app: FastAPI):
     yield
     
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+    ],  # Only accept request from this address
+    allow_credentials=True,
+    allow_methods=["*"],  # accept all methods
+    allow_headers=["*"],  # accept all headers
+)
 
 lock = threading.Lock()
 face_cascade = cv2.CascadeClassifier('assets/haarcascade_frontalface_alt.xml')
