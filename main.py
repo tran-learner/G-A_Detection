@@ -76,11 +76,13 @@ def analyze_face():
             face_img = full_frame[y:y+h, x:x+w].copy()
             # cv2.imwrite(f"debug/face_{process_no}.jpg", face_img)
             age = age_predict(face_img)
-            ages.append(age)
             
             gender = gender_predict(full_frame, x, y, w, h)
+            if gender<0.3: age = age + 5
             print(gender)
             genders.append(gender)
+            ages.append(age)
+            
             if gender > 0.98:
                 f_count += 1
 
