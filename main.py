@@ -35,7 +35,7 @@ current_frame = None
 
 def camera_loop():
     global current_frame
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(3)
     while True:
         ret, frame = cap.read()
         if not ret:
